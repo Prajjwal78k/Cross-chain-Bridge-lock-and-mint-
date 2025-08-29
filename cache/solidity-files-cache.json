@@ -268,8 +268,8 @@
       ]
     },
     "/Users/prajjwalpandey/Bridge_Project/contracts/MintBridge.sol": {
-      "lastModificationDate": 1756118409893,
-      "contentHash": "0447b2512902a840f524d2e216db8e48",
+      "lastModificationDate": 1756283924709,
+      "contentHash": "ae3b157fdeb14a183662ea67148168b9",
       "sourceName": "contracts/MintBridge.sol",
       "solcConfig": {
         "version": "0.8.30",
@@ -1114,8 +1114,8 @@
       ]
     },
     "/Users/prajjwalpandey/Bridge_Project/contracts/lockBridge.sol": {
-      "lastModificationDate": 1755803629229,
-      "contentHash": "dd1a47b68cef62e953a886441f0497f3",
+      "lastModificationDate": 1756454632945,
+      "contentHash": "06001f475d6f9ad72c3c1646108437aa",
       "sourceName": "contracts/lockBridge.sol",
       "solcConfig": {
         "version": "0.8.30",
@@ -1151,6 +1151,44 @@
       ],
       "artifacts": [
         "Source_bridge"
+      ]
+    },
+    "/Users/prajjwalpandey/Bridge_Project/contracts/ERC20_Mock(tests).sol": {
+      "lastModificationDate": 1756454530055,
+      "contentHash": "991190e37a24529c049afc0dd54d99b3",
+      "sourceName": "contracts/ERC20_Mock(tests).sol",
+      "solcConfig": {
+        "version": "0.8.30",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.30"
+      ],
+      "artifacts": [
+        "ERC20Mock"
       ]
     }
   }

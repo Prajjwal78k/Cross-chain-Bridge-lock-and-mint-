@@ -8,14 +8,16 @@ describe("Dest_Bridge_test", function(){
     beforeEach(async function () {
         [owner, relayer, user] = await ethers.getSigners();
         const Token = await ethers.getContractFactory("WrappedERC20");
-        token = await Token.deploy("Wrapped Token", "WTK");
-
+        token = await Token.deploy("Wrapped Token", "WTK",owner.address);
+        await token.waitForDeployment();
         const DestBridge = await ethers.getContractFactory("Dest_Bridge");
         destBridge = await DestBridge.deploy(relayer.address);
-
+        await destBridge.waitForDeployment();
         await token.transferOwnership(destBridge.getAddress());
     });
     it("Minting is done only once?", async function(){
+        const amount= ethers.parseEther("100");
+        const nonce=1;
         const before = await token.balanceOf(user.address);
 
         await destBridge.connect(relayer).mintTokens(user.address,token.getAddress(),amount,nonce);
@@ -27,8 +29,7 @@ describe("Dest_Bridge_test", function(){
         const amount= ethers.parseEther("100");
         const nonce=1;
         await destBridge.connect(relayer).mintTokens(user.address,token.getAddress(),amount,nonce);
-        await destBridge.connect(relayer).mintTokens(user.address,token.getAddress(),amount,nonce);
-        expect(token.balanceOf(user.address)).to.equal(amount);
+        expect(destBridge.connect(relayer).mintTokens(user.address,token.getAddress(),amount,nonce)).to.be.revertedWith("MintBridge: Nonce already used");
     });
 
     it("Verify balance", async function () {
