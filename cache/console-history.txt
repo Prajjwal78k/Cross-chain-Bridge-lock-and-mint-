@@ -1,0 +1,16 @@
+main();
+}
+    }
+        process.exit(1);
+        console.error("Failed:",err);
+    catch(err){
+    }
+        console.log("The Address of the lockBridge is", await lockBridge.getAddress());
+        await lockBridge.waitForDeployment();
+        const lockBridge= await LockBridge.deploy();
+        const LockBridge= await ethers.getContractFactory("Source_bridge");
+        console.log("The deployer deploying the source_bridge is:", deployers.address);
+        const [deployers]= await ethers.getSigners();
+    try{
+async function main(){
+const { ethers } = require("hardhat");

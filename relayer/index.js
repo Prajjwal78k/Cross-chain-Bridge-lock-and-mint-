@@ -7,14 +7,14 @@ const RELAYER_PRIVATE_KEY = process.env.RELAYER_PRIVATE_KEY;  // took this priva
 console.log("Source_BridgeAdd:", Source_BridgeAdd);
 console.log("Dest_bridgeAdd:", Dest_bridgeAdd);
 async function main(){
-    let SRC_RPC="wss://eth-sepolia.api.onfinality.io/public-ws";
+    let SRC_RPC="ws://127.0.0.1:8545";
     const SRCprovider= new WebSocketProvider(SRC_RPC);
     const Src_BridgeAbi=["event Locked(address user, address token, uint amount,uint nonce)"];
     const SourceBridge= new Contract(Source_BridgeAdd, Src_BridgeAbi,SRCprovider);
     
     
-    let DEST_RPC="https://api.avax-test.network/ext/bc/C/rpc";
-    const DESTprovider= new JsonRpcProvider(DEST_RPC);
+    let DEST_RPC="ws://127.0.0.1:8545";
+    const DESTprovider= new WebSocketProvider(DEST_RPC);
     const relayerWallet = new Wallet(RELAYER_PRIVATE_KEY, DESTprovider);
     const Dst_BridgeAbi=["function mintTokens(address user, address token, uint amount, uint nonce)"];
     const DestBridge= new Contract(Dest_bridgeAdd,Dst_BridgeAbi,relayerWallet);
