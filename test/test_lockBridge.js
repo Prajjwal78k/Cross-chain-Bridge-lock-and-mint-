@@ -7,14 +7,13 @@ describe("Source_Bridge_Tests",function(){
     beforeEach(async function () {
         [owner, user] = await ethers.getSigners();
         const Token = await ethers.getContractFactory("ERC20Mock");
-        token = await Token.deploy("TestToken", "TT", owner.address, ethers.parseEther("1000"));
+        token = await Token.deploy("TestToken", "TT", user.address, ethers.parseEther("1000"));
         await token.waitForDeployment();
 
         const Bridge = await ethers.getContractFactory("Source_bridge");
         bridge = await Bridge.deploy();
         await bridge.waitForDeployment();
 
-        await token.transfer(user.address, ethers.parseEther("100"));
     });
 
     it("should lock tokens", async function () {

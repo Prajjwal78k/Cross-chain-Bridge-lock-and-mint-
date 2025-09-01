@@ -6,7 +6,7 @@ describe("WrappedERC20", function(){
     beforeEach(async function(){
         [bridge,user]= await ethers.getSigners();
         WrappedERC20= await ethers.getContractFactory("WrappedERC20");
-        wrapped= await WrappedERC20.deploy("Wrapped Token","wTKN",bridge.address);
+        wrapped= await WrappedERC20.deploy("Wrapped Token","WTKN",bridge.address);
         await wrapped.waitForDeployment();
     });
     it ("Mint bridged token via MintBridge", async function(){
