@@ -1,0 +1,20 @@
+[dotenv@17.2.1] injecting env (0) from .env -- tip: ⚙️  override existing env vars with { override: true }
+Loaded .env file
+lock_BridgeAdd: undefined
+Dest_bridgeAdd: 0xEf9f1ACE83dfbB8f559Da621f4aEA72C6EB10eBf
+Failed: TypeError: invalid value for Contract target (argument="target", value=null, code=INVALID_ARGUMENT, version=6.15.0)
+    at makeError (/Users/prajjwalpandey/Bridge_Project/node_modules/ethers/lib.commonjs/utils/errors.js:130:21)
+    at assert (/Users/prajjwalpandey/Bridge_Project/node_modules/ethers/lib.commonjs/utils/errors.js:157:15)
+    at assertArgument (/Users/prajjwalpandey/Bridge_Project/node_modules/ethers/lib.commonjs/utils/errors.js:169:5)
+    at new BaseContract (/Users/prajjwalpandey/Bridge_Project/node_modules/ethers/lib.commonjs/contract/contract.js:546:39)
+    at new Contract (/Users/prajjwalpandey/Bridge_Project/node_modules/ethers/lib.commonjs/contract/contract.js:957:1)
+    at main (/Users/prajjwalpandey/Bridge_Project/relayer/index.js:15:25)
+    at Object.<anonymous> (/Users/prajjwalpandey/Bridge_Project/relayer/index.js:44:1)
+    at Module._compile (node:internal/modules/cjs/loader:1688:14)
+    at Object..js (node:internal/modules/cjs/loader:1820:10)
+    at Module.load (node:internal/modules/cjs/loader:1423:32) {
+  code: 'INVALID_ARGUMENT',
+  argument: 'target',
+  value: undefined,
+  shortMessage: 'invalid value for Contract target'
+}

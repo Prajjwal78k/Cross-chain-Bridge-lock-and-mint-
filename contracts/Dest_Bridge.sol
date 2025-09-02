@@ -10,11 +10,12 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract Dest_Bridge is Ownable {
     constructor(address initialOwner) Ownable(initialOwner) {}    //remember to initialise initialOwner as Relayer(or owner) in the deployment script
     mapping(uint256=>bool) public doneNonces;
+    event Mint(address indexed user, address indexed token, uint256 amount, uint256 nonce);
     function mintTokens(address user, address token, uint amount, uint nonce) external onlyOwner{
         require(user != address(0), "MintBridge: invalid user");
         require(!doneNonces[nonce], "MintBridge: nonce already used");
         doneNonces[nonce]=true;
         WrappedERC20(token).mint(user, amount);
-        
+        emit Mint(user, token, amount, nonce);
     }
 }

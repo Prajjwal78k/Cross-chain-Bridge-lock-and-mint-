@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 contract Source_bridge {
     uint256 public nonce;
     mapping (address => mapping(address =>uint)) public LockAmtStore;
-    event Locked(address user, address token, uint amount,uint nonce);
+    event Locked(address user, address token, uint amount,uint256 nonce);
     function lockTokens(address token, uint amount) public {
         require(amount>0,"Amount must be >0");
         bool success= ERC20(token).transferFrom(msg.sender,address(this),amount);
