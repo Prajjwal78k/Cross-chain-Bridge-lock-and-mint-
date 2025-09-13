@@ -33,4 +33,7 @@ module.exports = {
       accounts: [process.env.PRIVATE_KEY], // Replace with your wallet private key
     },
   },
+  etherscan: {
+    apiKey: process.env.ETHERSCAN_API_KEY, // Get it from https://sepolia.etherscan.io/
+  }
 };

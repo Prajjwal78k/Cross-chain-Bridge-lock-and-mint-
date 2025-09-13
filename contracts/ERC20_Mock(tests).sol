@@ -12,4 +12,8 @@ contract ERC20Mock is ERC20 {
     ) ERC20(name, symbol) {
         _mint(initialAccount, initialBalance);
     }
+
+    function mint(address to, uint256 amount) external {
+        _mint(to, amount);
+    }
 }
