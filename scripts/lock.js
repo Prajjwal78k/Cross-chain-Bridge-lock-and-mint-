@@ -1,29 +1,39 @@
+require("dotenv").config();
 const { ethers } = require("hardhat");
+
 async function main(){
     try{
-        const [deployer]= await ethers.getSigners();
-        console.log("The deployer deploying the source_bridge is:", deployer.address);
-        const MockAdd= "0xf21e6E8f37517582994acd3692C061F5FADCb6b4";
-        const mock = await ethers.getContractAt("ERC20Mock", MockAdd);
-        console.log("Mock token deployed at:", MockAdd);
-        const lockBridgeAdd= "0xDbE032725b1992d468b243213715Df12274b1728";
+        const [deployer] = await ethers.getSigners();
+        console.log("Deployer:", deployer.address);
+
+        const tokenAddress = process.env.TOKEN_ADDRESS; // source token on Sepolia
+        const lockBridgeAdd = process.env.lock_BridgeAdd; // Source_bridge on Sepolia
+        const amountHuman = process.env.LOCK_AMOUNT || "100"; 
+
+        if (!tokenAddress) throw new Error("Missing TOKEN_ADDRESS in .env");
+        if (!lockBridgeAdd) throw new Error("Missing lock_BridgeAdd in .env");
+
+        const token = await ethers.getContractAt("ERC20", tokenAddress);
         const lockBridge = await ethers.getContractAt("Source_bridge", lockBridgeAdd);
-        console.log("The Address of the lockBridge is", lockBridgeAdd);
-        await mock.mint(deployer.address, ethers.parseEther("5000"));
-        //Approve the token for locking
-        const approveTxn= await mock.approve(lockBridgeAdd,ethers.parseEther("500"));
+
+        const decimals = (await token.decimals?.()) ?? 18;
+        const amount = ethers.parseUnits(amountHuman, decimals);
+
+        // Approve
+        console.log("Approving", amount.toString(), "to", lockBridgeAdd);
+        const approveTxn = await token.approve(lockBridgeAdd, amount);
         await approveTxn.wait();
-        console.log("500 token approved to the bridge");
-        //lock tokens(calls the locktokens function to emit event)
-        const balance= await mock.balanceOf(deployer.address);
-        console.log("The balance of deployer is:", ethers.formatEther(balance));
-        const lockTxn = await lockBridge.lockTokens(MockAdd, ethers.parseEther("100"));
+        console.log("Approved.");
+
+        // Lock
+        console.log("Locking tokens...");
+        const lockTxn = await lockBridge.lockTokens(tokenAddress, amount);
         await lockTxn.wait();
-        console.log("Locked 100 tokens");
-    }
-    catch(err){
-        console.error("Failed:",err);
+        console.log("Locked", amountHuman, "tokens");
+    } catch (err) {
+        console.error("Failed:", err);
         process.exit(1);
     }
 }
-main();    
+
+main();

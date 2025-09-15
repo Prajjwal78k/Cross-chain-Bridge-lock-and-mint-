@@ -3,6 +3,8 @@ const {ethers}= require("hardhat");
 
 async function main(){
     try{
+        //Deploy the Bridge Contract
+        
         console.log("Deploying and minting tokens...");
         const [deployer]= await ethers.getSigners();
     
@@ -12,7 +14,7 @@ async function main(){
         const bridgeAddress= await bridge.getAddress();
         console.log("Bridge deployed at:", bridgeAddress);
 
-
+        //Deploy the Wrapped Token
 
         const Token= await ethers.getContractFactory("WrappedERC20");
         const token= await Token.deploy("WrappedToken","wTKN",bridgeAddress);

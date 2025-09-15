@@ -6,10 +6,11 @@ const { WebSocketProvider, JsonRpcProvider, Wallet, Contract } = require("ethers
 const lock_BridgeAdd= process.env.lock_BridgeAdd; 
 const Dest_bridgeAdd=process.env.Dest_bridgeAdd;
 const RELAYER_PRIVATE_KEY = process.env.RELAYER_PRIVATE_KEY;
+const WRAPPED_TOKEN_ADDRESS = process.env.WRAPPED_TOKEN_ADDRESS;
 console.log("lock_BridgeAdd:", lock_BridgeAdd);
 console.log("Dest_bridgeAdd:", Dest_bridgeAdd);
 async function main(){
-    const SRC_RPC="wss://ethereum-sepolia-rpc.publicnode.com";
+    const SRC_RPC = process.env.SRC_RPC || "wss://ethereum-sepolia-rpc.publicnode.com";
     const SRCprovider= new WebSocketProvider(SRC_RPC);
     const Src_BridgeAbi=["event Locked(address user, address token, uint amount,uint256 nonce)"];
     const SourceBridge= new Contract(lock_BridgeAdd, Src_BridgeAbi,SRCprovider);
@@ -32,6 +33,10 @@ async function main(){
         console.log("Amount:",amount.toString());
         console.log("Nonce",nonce.toString());
         console.log("Block", event.blockNumber);
+        const srcTxHash = (event && event.log && event.log.transactionHash) || event?.transactionHash;
+        if (srcTxHash) {
+            console.log("Source tx:", `https://sepolia.etherscan.io/tx/${srcTxHash}`);
+        }
         
         console.log("33333");
         try{
@@ -50,7 +55,10 @@ async function main(){
                 return;
             }
             
-            const txn = await DestBridge.connect(relayerWallet).mintTokens(user, token, amount, nonce);
+            // Always mint the destination wrapped token, not the source token
+            const wrappedToken = WRAPPED_TOKEN_ADDRESS || token;
+            const txn = await DestBridge.connect(relayerWallet).mintTokens(user, wrappedToken, amount, nonce);
+            console.log("Dest tx:", `https://sepolia.arbiscan.io/tx/${txn.hash}`);
             await txn.wait();
             console.log(`Minted on destination chain.`);
         } catch (err){

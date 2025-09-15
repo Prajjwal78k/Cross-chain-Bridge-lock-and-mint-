@@ -5,9 +5,9 @@ async function main(){
         console.log("The deployer deploying the source_bridge is:", deployer.address);
         //deploy the Mock Tokens
         const Mock= await ethers.getContractFactory("ERC20Mock"); // "0xBf320DDB515cd742F771D741833FA39012C7feE7"
-        const mock = await Mock.deploy("MockToken", "MCK", deployer.address, ethers.parseEther("10000"));
+        const mock = await Mock.deploy("Ancilar", "ANC", deployer.address, ethers.parseEther("10000"));
         await mock.waitForDeployment();
-        
+
         const MockAdd= await mock.getAddress();
         console.log("Mock token deployed at:", MockAdd);
         //deploy the Source Bridge
