@@ -3,14 +3,19 @@ console.log("Loaded .env file");
 
 const { WebSocketProvider, JsonRpcProvider, Wallet, Contract } = require("ethers");
 
+// Env/configuration variables
 const lock_BridgeAdd= process.env.lock_BridgeAdd; 
 const Dest_bridgeAdd=process.env.Dest_bridgeAdd;
 const RELAYER_PRIVATE_KEY = process.env.RELAYER_PRIVATE_KEY;
 const WRAPPED_TOKEN_ADDRESS = process.env.WRAPPED_TOKEN_ADDRESS;
+
+// Visibility logs
 console.log("lock_BridgeAdd:", lock_BridgeAdd);
 console.log("Dest_bridgeAdd:", Dest_bridgeAdd);
+
 async function main(){
-    const SRC_RPC = process.env.SRC_RPC || "wss://ethereum-sepolia-rpc.publicnode.com";
+    
+    const SRC_RPC="wss://ethereum-sepolia-rpc.publicnode.com";
     const SRCprovider= new WebSocketProvider(SRC_RPC);
     const Src_BridgeAbi=["event Locked(address user, address token, uint amount,uint256 nonce)"];
     const SourceBridge= new Contract(lock_BridgeAdd, Src_BridgeAbi,SRCprovider);
@@ -27,6 +32,7 @@ async function main(){
     
     console.log("Event Triggered on the source chain [Eth Sepolia] for Locked");
     SourceBridge.on("Locked",async (user,token, amount, nonce, event)=>{
+        // Event details
         console.log("Locked");
         console.log("User:", user);
         console.log("Token:",token);
@@ -40,6 +46,7 @@ async function main(){
         
         console.log("33333");
         try{
+            // Check if nonce is already used
             const nonceUsed = await DestBridge.doneNonces(nonce);
             console.log("Nonce Used:", nonceUsed);
             if (nonceUsed) {
@@ -47,7 +54,7 @@ async function main(){
                 return;
             }
 
-            // Verify the owner of the Dest_Bridge contract
+            // Ownership check
             const bridgeOwner = await DestBridge.owner();
             console.log("Bridge Owner:", bridgeOwner);
             if (bridgeOwner.toLowerCase() !== relayerWallet.address.toLowerCase()) {
@@ -55,8 +62,15 @@ async function main(){
                 return;
             }
             
-            // Always mint the destination wrapped token, not the source token
-            const wrappedToken = WRAPPED_TOKEN_ADDRESS || token;
+            // Require explicit wrapped token from env; do not fallback to source token
+            if (!WRAPPED_TOKEN_ADDRESS) {
+                console.error("WRAPPED_TOKEN_ADDRESS not set in env; refusing to mint with source token.");
+                return;
+            }
+            const wrappedToken = WRAPPED_TOKEN_ADDRESS;
+            console.log("Wrapped token (env):", wrappedToken);
+
+            // Mint on destination
             const txn = await DestBridge.connect(relayerWallet).mintTokens(user, wrappedToken, amount, nonce);
             console.log("Dest tx:", `https://sepolia.arbiscan.io/tx/${txn.hash}`);
             await txn.wait();
@@ -66,6 +80,7 @@ async function main(){
         }
     });    
 };
+
 main().catch((err)=>{
     console.error("Failed:",err);
 });
